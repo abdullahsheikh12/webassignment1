@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Todo List</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>Todo List</h1>
+        
+        <form class="add-form" action="/add" method="POST">
+            <div class="form-control">
+                <input type="text" name="task" placeholder="Add a new task..." required>
+                <button type="submit" class="btn add-btn">Add Task</button>
+            </div>
+        </form>
+
+        <div class="tasks-container">
+            <% if(tasks.length > 0) { %>
+                <ul class="task-list">
+                    <% tasks.forEach(task => { %>
+                        <li class="task-item" data-id="<%= task.id %>">
+                            <div class="task-text"><%= task.text %></div>
+                            <div class="task-actions">
+                                <button class="btn edit-btn" onclick="showEditForm('<%= task.id %>', '<%= task.text %>')">Edit</button>
+                                <form action="/delete/<%= task.id %>" method="POST" class="delete-form">
+                                    <button type="submit" class="btn delete-btn">Delete</button>
+                                </form>
+                            </div>
+                        </li>
+                    <% }); %>
+                </ul>
+            <% } else { %>
+                <p class="no-tasks">No tasks found. Add a task to get started!</p>
+            <% } %>
+        </div>
+    </div>
+
+    <!-- Edit Modal -->
+    <div id="edit-modal" class="modal">
+        <div class="modal-content">
+            <span class="close-btn" onclick="closeEditModal()">&times;</span>
+            <h2>Edit Task</h2>
+            <form id="edit-form" action="/edit" method="POST">
+                <input type="hidden" id="edit-task-id" name="id">
+                <input type="text" id="edit-task-text" name="task" required>
+                <button type="submit" class="btn">Save Changes</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // Show edit modal
+        function showEditForm(id, text) {
+            document.getElementById('edit-task-id').value = id;
+            document.getElementById('edit-task-text').value = text;
+            document.getElementById('edit-modal').style.display = 'block';
+        }
+
+        // Close edit modal
+        function closeEditModal() {
+            document.getElementById('edit-modal').style.display = 'none';
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            const modal = document.getElementById('edit-modal');
+            if (event.target == modal) {
+                modal.style.display = 'none';
+            }
+        }
+    </script>
+</body>
+</html>
